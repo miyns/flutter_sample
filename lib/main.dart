@@ -1,5 +1,9 @@
+import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
+import 'data/remote/information_data_source.dart';
 
+final logger = Logger();
 void main() {
   runApp(const MyApp());
 }
@@ -57,6 +61,15 @@ class _MyHomePageState extends State<MyHomePage> {
       // so that the display can reflect the updated values. If we changed
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
+
+      final dio = Dio(); // Provide a dio instance
+      dio.options.headers["x-requested-with"] = "XMLHttpRequest";
+      final client = InformationDataSource(dio);
+
+      client.getInformations().then((it) => {
+            for (var info in it) {logger.i(info.toString())}
+          });
+
       _counter++;
     });
   }
